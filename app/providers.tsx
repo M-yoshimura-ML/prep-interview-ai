@@ -14,13 +14,7 @@ interface ProvidersProps {
 export function Providers({children, themeProps}: ProvidersProps) {
   return (
     <HeroUIProvider>
-        <NextThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            enableColorScheme
-            {...themeProps}
-        >
+        <NextThemeProvider {...themeProps}>
         {children}
       </NextThemeProvider>
     </HeroUIProvider>
