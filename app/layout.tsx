@@ -29,8 +29,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers themeProps={{ attribute:"class", defaultTheme: "dark" }}>
-          {children}
+        <Providers themeProps={{ attribute:"class", defaultTheme: "white" }}>
+          <div className="relative flex flex-col h-screen">
+            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>

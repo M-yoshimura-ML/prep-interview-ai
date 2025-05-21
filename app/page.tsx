@@ -1,11 +1,11 @@
 "use client";
 
-import {Button} from '@heroui/button'; 
+import Home  from '@/components/Home';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div>
-      <Button>Click me</Button>
+      <Home />
     </div>
   )
 }
