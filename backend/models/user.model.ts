@@ -31,7 +31,7 @@ const authProvidersSchema = new mongoose.Schema({
     provider: {
         type: String,
         required: true,
-        enum: ["google", "github", "credential"],
+        enum: ["google", "github", "credentials"],
     },
     providerId: {
         type: String,
