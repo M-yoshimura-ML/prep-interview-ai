@@ -5,6 +5,9 @@ import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
 import LandingPageStats from './layout/landing-page-stats/LandingPageStats';
+import Testimonials from './layout/testimonials/Testimonials';
+import Pricing from './layout/pricing/Pricing';
+import InterviewProcessCards from './layout/interview-process/InterviewProcessCards';
 
 function Home() {
   return (
@@ -62,11 +65,11 @@ function Home() {
 
       <LandingPageStats />
 
-      {/* <Testimonials />
+      <Testimonials />
 
       <Pricing />
 
-      <InterviewProcessCards /> */}
+      <InterviewProcessCards />
     </section>
   )
 }
