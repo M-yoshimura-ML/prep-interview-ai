@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import Footer from "@/components/layout/footer/Footer";
 import Navbar from "@/components/layout/header/Navbar";
+import HeaderAnnouncement from "@/components/layout/header/HeaderAnnouncement";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers themeProps={{ attribute:"class", defaultTheme: "white" }}>
+        <Providers themeProps={{ attribute:"class", defaultTheme: "dark" }}>
+          <HeaderAnnouncement />
           <div className="relative flex flex-col h-screen">
             <Navbar />
             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
