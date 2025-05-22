@@ -16,12 +16,12 @@ const options = {
                 await dbConnect();
                 const user = await User.findOne({
                     email: credentials?.email,
-                });
+                }).select("+password");
                 if (!user) {
                     throw new Error("Invalid Email or Password");
                 }
 
-                const isPasswordValid = await user.matchPassword(credentials?.password);
+                const isPasswordValid = await user.comparePassword(credentials?.password);
                 if (!isPasswordValid) {
                     throw new Error("Invalid Email or Password");
                 };
@@ -31,6 +31,23 @@ const options = {
     ],
     session: {
         strategy: "jwt" as const,
+    },
+    callbacks: {
+        async jwt({ token, user }: any) {
+            //console.log("JWT Callback", token);
+            if (user) {
+                token.user = user;
+            }
+            return token;
+        },
+        async session({ session, token }: any) {
+            //console.log("Session Callback", session);
+            if (token) {
+                session.user = token.user;
+            }
+            delete session.user.password;
+            return session;
+        },
     },
     pages: {
         signIn: "/login",

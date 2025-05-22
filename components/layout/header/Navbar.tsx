@@ -16,8 +16,12 @@ import HeaderUser from "./HeaderUser";
 import { Button, Link, User } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { siteConfig } from "@/config/site";
+import { useSession } from "next-auth/react";
 
 const Navbar = () => {
+  const data = useSession();
+  console.log(data);
+  
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
