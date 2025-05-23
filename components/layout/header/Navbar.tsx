@@ -25,6 +25,8 @@ const Navbar = () => {
   const { data } = useSession();
   const user = data?.user as IUser;
 
+  console.log("User", user);
+
   return (
     <NextUINavbar 
       maxWidth="xl" 
