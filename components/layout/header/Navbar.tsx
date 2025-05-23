@@ -13,15 +13,16 @@ import NextLink from "next/link";
 
 import { Logo } from "@/config/Logo";
 import HeaderUser from "./HeaderUser";
-import { Button, Link, User } from "@heroui/react";
+import { Button, Link, Skeleton, User } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { siteConfig } from "@/config/site";
 import { useSession } from "next-auth/react";
+import { IUser } from "@/backend/models/user.model";
 
 const Navbar = () => {
-  const data = useSession();
-  console.log(data);
-  
+  const { data } = useSession();
+  const user = data?.user as IUser;
+
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -39,21 +40,52 @@ const Navbar = () => {
       >
         <NavbarItem className="hidden sm:flex gap-2"></NavbarItem>
 
-        <NavbarItem className="hidden sm:flex">
-          <Button
-            className="bg-foreground font-medium text-background px-5"
-            color="secondary"
-            radius="full"
-            variant="flat"
-            as={Link}
-            href="/subscribe"
-          >
-            Subscribe for $9.99
-          </Button>
-        </NavbarItem>
-        <NavbarItem className="hidden sm:flex">
-          <HeaderUser />
-        </NavbarItem>
+        {data?.user ? (
+          <>
+            <NavbarItem className="hidden sm:flex">
+              <Button
+                className="bg-foreground font-medium text-background px-5"
+                color="secondary"
+                radius="full"
+                variant="flat"
+                as={Link}
+                href="/subscribe"
+              >
+                Subscribe for $9.99
+              </Button>
+            </NavbarItem>
+            <NavbarItem className="hidden sm:flex">
+              <HeaderUser user={user} />
+            </NavbarItem>
+          </>
+        ) : (
+          <>
+            {data === undefined && (
+              <div className="max-w-[200px] w-full flex items-center gap-3">
+                <div>
+                  <Skeleton className="flex rounded-full w-12 h-12" />
+                </div>
+                <div className="w-full flex flex-col gap-2">
+                  <Skeleton className="h-3 w-3/5 rounded-lg" />
+                  <Skeleton className="h-3 w-4/5 rounded-lg" />
+                </div>
+              </div>
+            )}
+            {data === null && (
+              <Button
+                className="bg-foreground font-medium text-background px-5"
+                color="secondary"
+                endContent={<Icon icon="tabler:login" />}
+                radius="full"
+                variant="flat"
+                as={Link}
+                href="/login"
+              >
+                Login
+              </Button>
+            )}
+          </>
+        )}
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
