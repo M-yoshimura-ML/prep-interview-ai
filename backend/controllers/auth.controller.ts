@@ -51,3 +51,34 @@ export const updateUserProfile = catchAsyncErrors(
         return {updated: true}
     }
 );
+
+export const updateUserPassword = catchAsyncErrors(
+    async ({
+        newPassword,
+        confirmPassword,
+        userEmail
+    }: {newPassword: string, confirmPassword: string, userEmail: string}) => {
+        await dbConnect();
+
+        const user = await User.findOne({email: userEmail}).select("+password");
+
+        if(newPassword !== confirmPassword) {
+            throw new Error("Password do not match");
+        }
+
+        //optional to have multiple providers (credentials + Github, Google)
+        // if (!user?.authProviders?.some(
+        //     (provider: {provider: string}) => provider.provider === "credentials"
+        // )) {
+        //     user?.authProviders?.push({
+        //         provider: "credentials",
+        //         providerId: userEmail
+        //     })
+        // }
+
+        user.password = newPassword;
+        await user.save();
+
+        return {updated: true}
+    }
+);
