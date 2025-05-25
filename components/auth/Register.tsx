@@ -5,25 +5,15 @@ import { Button, Input, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Logo } from "@/config/Logo";
 import { registerUser } from "@/actions/auth.actions";
+import { useGenericSubmitHandler } from "../form/genericSubmitHandler";
 
 export default function Register() {
   const [isVisible, setIsVisible] = React.useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-
-    const res = await registerUser(
-      data.name as string,
-      data.email as string,
-      data.password as string
-    );
-
-    console.log(res);
-  };
+  const {handleSubmit, loading} = useGenericSubmitHandler(async (data) => {
+    const res = await registerUser(data.name, data.email, data.password);
+  });
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -36,7 +26,7 @@ export default function Register() {
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          <Form validationBehavior="native" onSubmit={submitHandler}>
+          <Form validationBehavior="native" onSubmit={handleSubmit}>
             <div className="flex flex-col w-full">
               <Input
                 isRequired
@@ -95,7 +85,7 @@ export default function Register() {
               />
             </div>
 
-            <Button className="w-full mt-2" color="primary" type="submit">
+            <Button className="w-full mt-2" color="primary" type="submit" isDisabled={loading} isLoading={loading}>
               Register
             </Button>
           </Form>
