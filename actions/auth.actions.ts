@@ -1,6 +1,6 @@
 'use server';
 
-import { register, updateUserProfile } from "@/backend/controllers/auth.controller";
+import { register, updateUserPassword, updateUserProfile } from "@/backend/controllers/auth.controller";
 
 export async function registerUser(name: string, email: string, password: string) {
     return await register(name, email, password);
@@ -18,4 +18,16 @@ export async function updateProfile({
     oldAvatar?: string;
 }) {
     return await updateUserProfile({name, userEmail: email, avatar, oldAvatar});
+}
+
+export async function updatePassword({
+    newPassword,
+    confirmPassword,
+    userEmail
+}: {
+    newPassword: string; 
+    confirmPassword: string; 
+    userEmail: string;
+}) {
+    return await updateUserPassword({newPassword, confirmPassword, userEmail});
 }

@@ -98,14 +98,14 @@ const options = {
                 token.user = user;
             } else {
                 await dbConnect();
-                const dbUser = await User.findById(token.user._id);
+                const dbUser = await User.findById(token.user.id);
                 if (dbUser) {
                     token.user = dbUser
                 }
             }
 
             if(trigger === 'update') {
-                let updatedUser = await User.findById(token.user.id);
+                let updatedUser = await User.findById(token.user._id);
                 token.user = updatedUser;
             }
             return token;
