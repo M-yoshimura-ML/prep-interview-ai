@@ -33,6 +33,10 @@ const options = {
             clientId: process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+        }),
     ],
     session: {
         strategy: "jwt" as const,
@@ -42,6 +46,7 @@ const options = {
             //signIn callback is called when the user signs in google or Github
             console.log("SignIn Callback", user);
             console.log("Account Callback", account);
+            console.log("Profile Callback", profile);
             await dbConnect();
             if (account.provider === "credentials") {
                 user.id = user?._id;
@@ -55,7 +60,7 @@ const options = {
                         authProviders: [
                             {
                                 provider: account?.provider,
-                                providerId: account?.id || profile?.id,
+                                providerId: account?.id || profile?.id || profile?.sub,
                             }
                         ]
                     });
