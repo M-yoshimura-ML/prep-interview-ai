@@ -6,13 +6,24 @@ import { Icon } from "@iconify/react";
 import { Logo } from "@/config/Logo";
 import { registerUser } from "@/actions/auth.actions";
 import { useGenericSubmitHandler } from "../form/genericSubmitHandler";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [isVisible, setIsVisible] = React.useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const router = useRouter();
 
   const {handleSubmit, loading} = useGenericSubmitHandler(async (data) => {
     const res = await registerUser(data.name, data.email, data.password);
+    if (res?.error) {
+      return toast.error(res?.error?.message);
+    }
+
+    if (res?.created) {
+      toast.success('Account created successfully');
+      router.push('/app/dashboard');
+    }
   });
 
   return (
