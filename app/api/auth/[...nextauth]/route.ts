@@ -66,12 +66,27 @@ const options = {
                     });
                     user.id = newUser._id;
                 } else {
-                    user.id = existingUser._id;
+                    //optional: check if the user already has the auth provider
+                    //if not, add it to the existing user's authProviders
+                    const existingProvider = existingUser.authProviders.find(
+                        (provider: {provider: string}) => provider.provider === account?.provider
+                    );
+
+                    if(!existingProvider) {
+                        existingUser.authProviders.push({
+                            provider: account?.provider,
+                            providerId: account?.id || profile?.id || profile?.sub,
+                        });
+                        await existingUser.save();
+                    }
+
                     // Optional: update missing profile picture
                     if (!existingUser.profilePicture?.url && (profile?.avatar_url || user?.image)) {
                         existingUser.profilePicture = {url: profile?.avatar_url || user?.image};
                         await existingUser.save();
                     }
+
+                    user.id = existingUser._id;
                 }
             }
             
