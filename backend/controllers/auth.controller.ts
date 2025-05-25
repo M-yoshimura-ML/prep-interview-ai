@@ -3,6 +3,8 @@ import User from "../models/user.model";
 
 export const register = async (name: string, email: string, password: string) => {
     await dbConnect();
+
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for demonstration
     const newUser = await User.create({
         name,
         email,
