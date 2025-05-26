@@ -2,6 +2,8 @@ import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import User from "../models/user.model";
 import { delete_file, upload_file } from "../utils/cloudinary";
+import { resetPasswordHTMLTemplate } from "../utils/emailTemplate";
+import sendEmail from "../utils/sendEmail";
 
 export const register = catchAsyncErrors(async (name: string, email: string, password: string) => {
     await dbConnect();
@@ -80,5 +82,37 @@ export const updateUserPassword = catchAsyncErrors(
         await user.save();
 
         return {updated: true}
+    }
+);
+
+export const forgotUserPassword = catchAsyncErrors(
+    async (email: string) => {
+        await dbConnect();
+
+        const user = await User.findOne({email}).select("+password");
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        const resetToken = user.getResetPasswordToken();
+        await user.save();
+
+        const resetUrl = `${process.env.API_URL}/reset-password?token=${resetToken}`;
+        const message = resetPasswordHTMLTemplate(user.name, resetUrl);
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: "Prep AI Password Reset Request",
+                message,
+            });
+        } catch (error) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save();
+            throw new Error("Email could not be sent");
+        }
+
+        return {emailSent: true}
     }
 );
