@@ -4,6 +4,7 @@ import User from "../models/user.model";
 import { delete_file, upload_file } from "../utils/cloudinary";
 import { resetPasswordHTMLTemplate } from "../utils/emailTemplate";
 import sendEmail from "../utils/sendEmail";
+import crypto from "crypto";
 
 export const register = catchAsyncErrors(async (name: string, email: string, password: string) => {
     await dbConnect();
@@ -97,7 +98,7 @@ export const forgotUserPassword = catchAsyncErrors(
         const resetToken = user.getResetPasswordToken();
         await user.save();
 
-        const resetUrl = `${process.env.API_URL}/reset-password?token=${resetToken}`;
+        const resetUrl = `${process.env.API_URL}/password/reset/${resetToken}`;
         const message = resetPasswordHTMLTemplate(user.name, resetUrl);
 
         try {
@@ -114,5 +115,34 @@ export const forgotUserPassword = catchAsyncErrors(
         }
 
         return {emailSent: true}
+    }
+);
+
+
+export const resetUserPassword = catchAsyncErrors(
+    async (token: string, password: string, confirmPassword: string) => {
+        await dbConnect();
+
+        const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
+
+        const user = await User.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            throw new Error("Invalid or expired reset token");
+        }
+
+        if (password !== confirmPassword) {
+            throw new Error("Passwords do not match");
+        }
+
+        user.password = password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+
+        return {updated: true}
     }
 );
