@@ -85,7 +85,7 @@ const AppSiderbar = () => {
                                     text-${getPageIconAndPath(page.path).color}`} 
                             >
                                 <Icon
-                                    icon="carbon:document-pdf"
+                                    icon={getPageIconAndPath(page.path)?.icon}
                                     className="text-lg "
                                 />
                             </IconWrapper>
@@ -95,33 +95,6 @@ const AppSiderbar = () => {
                     </ListboxItem>
                 ))}
             </>
-            {/* <>
-                {pages?.map((page) => (
-                    <ListboxItem
-                        key={page.path}
-                        className={`mt-3 ${
-                            selectedKey?.toString()?.includes(page.path)
-                            ? "bg-gray-100 dark:bg-gray-800"
-                            : ""
-                        } `}
-                        startContent={
-                            <IconWrapper
-                                className={`bg-${
-                                    getPageIconAndPath(page.path).color
-                                }/10 text-${getPageIconAndPath(page.path).color}`}
-                            >
-                                <Icon
-                                    icon={getPageIconAndPath(page.path)?.icon}
-                                    className="text-lg"
-                                />
-                            </IconWrapper>
-                        }
-                        textValue=""
-                    >
-                        {page.title}
-                    </ListboxItem>
-                ))}
-            </> */}
         </Listbox>
     </div>
   );
