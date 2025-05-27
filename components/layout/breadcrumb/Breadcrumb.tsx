@@ -33,18 +33,6 @@ const Breadcrumb = ({ title, breadcrumbs }: BreadCrumbProps) => {
               </div>
             </li>
           ))}
-
-          {/* <li >
-              <div className="flex items-center">
-                <Icon icon="solar:alt-arrow-right-broken" fontSize={20} />
-                <Link
-                  href="/"
-                  className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
-                >
-                  Dashboard
-                </Link>
-              </div>
-            </li> */}
         </ol>
       </nav>
       <h2 className="text-2xl font-bold">{title}</h2>
