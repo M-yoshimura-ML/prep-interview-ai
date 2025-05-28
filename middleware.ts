@@ -8,5 +8,5 @@ export default withAuth(function middleware(req) {
 
 export const config = {
     // Define the paths that should be protected by authentication
-    matcher: ["/app/:path*"],
+    matcher: ["/app/:path*", "/api/interviews/:path*"],
 };

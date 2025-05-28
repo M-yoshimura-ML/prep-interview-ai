@@ -55,3 +55,17 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
 
     return { interviews };
 });
+
+export const deleteUserInterview = catchAsyncErrors(async (interviewId: string) => {
+    await dbConnect();
+
+    const interview = await Interview.findById(interviewId);
+
+    if(!interview) {
+        throw new Error("Interview not found");
+    }
+
+    await interview.deleteOne();
+
+    return { deleted: true };
+});

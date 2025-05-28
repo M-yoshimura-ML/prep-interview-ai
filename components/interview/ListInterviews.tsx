@@ -14,6 +14,9 @@ import {
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
 import { Key } from "@react-types/shared";
+import { deleteInterview } from "@/actions/interview.action";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export const columns = [
   { name: "INTERVIEW", uid: "interview" },
@@ -30,6 +33,21 @@ type ListInterviewProps = {
 
 export default function ListInterviews({ data }: ListInterviewProps) {
   const { interviews } = data;
+
+  const router = useRouter();
+
+  const deleteInterviewHandler = async (interviewId: string) => {
+    const res = await deleteInterview(interviewId);
+
+    if(res?.error) {
+      return toast.error(res?.error?.message);
+    }
+
+    if(res?.deleted) {
+      toast.success("Interview is deleted");
+      router.push("/app/interviews");
+    }
+  }
 
   const renderCell = React.useCallback(
     (interview: IInterview, columnKey: Key) => {
@@ -73,6 +91,7 @@ export default function ListInterviews({ data }: ListInterviewProps) {
                   <Icon
                     icon="solar:trash-bin-trash-outline"
                     fontSize={21}
+                    onClick={() => deleteInterviewHandler(interview._id)}
                   />
                 </span>
               </Tooltip>
