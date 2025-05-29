@@ -47,6 +47,17 @@ export const generateQuestions = async (
         max_tokens: maxToken,
         temperature: 0.8
     });
+
+    const content = response?.choices[0]?.message?.content;
+    if(!content) {
+        throw new Error("Failed to generate questions.");
+    }
+
+    const questions = content.trim().split("\n").filter((q) => q).map((q) => ({
+        question: q
+    }));
+
+    return questions;
 }
 
 export const evaluateAnswer = async () => {}

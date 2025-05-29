@@ -1,6 +1,7 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import Interview from "../models/interview.model";
+import { generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
 import { getCurrentUser } from "../utils/auth";
 
@@ -21,7 +22,10 @@ export const createInterview = catchAsyncErrors(async (body: InterviewBody) => {
 
     const { industry, type, topic, role, numOfQuestions, difficulty, duration, user } = body;
 
-    const questions = mockQuestions(numOfQuestions);
+    const questions = await generateQuestions(industry, topic, type, role, numOfQuestions, duration, difficulty);
+    console.log(questions);
+
+    //const questions = mockQuestions(numOfQuestions);
 
     const newInterview = await Interview.create({
         industry,
