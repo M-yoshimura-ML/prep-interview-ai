@@ -7,6 +7,8 @@ import { IInterview, IQuestion } from "@/backend/models/interview.model";
 import { formatTime, getForstIncompleteQuestionIndex } from "@/helpers/helpers";
 
 import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
+import toast from "react-hot-toast";
+import { updateInterview } from "@/actions/interview.action";
 
 
 export default function Interview({ interview }: { interview: IInterview }) {
@@ -20,6 +22,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
     const [answer, setAnswer] = useState("");
     const [timeLeft, setTimeLeft] = useState(interview?.durationLeft);
     const [showAlert, setShowAlert] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -41,6 +44,28 @@ export default function Interview({ interview }: { interview: IInterview }) {
 
     const handleAnswerChange = (value: string) => {
         setAnswer(value);
+    }
+
+    const saveAnswerToDB = async (questionId: string, answer: string) => {
+        setLoading(true);
+        try {
+            const res = await updateInterview(
+                interview?._id,
+                timeLeft?.toString(),
+                questionId,
+                answer
+            )
+
+            if (res?.error) {
+                return toast.error(res?.error?.message);
+            }
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+            
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -80,6 +105,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
                     color="danger"
                     startContent={<Icon icon="solar:exit-outline" fontSize={18} />}
                     variant="solid"
+                    onPress={() => saveAnswerToDB(currentQuestion?._id, answer)}
                 >
                     Save & Exit Interview
                 </Button>

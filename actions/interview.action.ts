@@ -1,6 +1,6 @@
 'use server';
 
-import { createInterview, deleteUserInterview, evaluateAnswer1 } from "@/backend/controllers/interview.controller";
+import { createInterview, deleteUserInterview, updateInterviewDetails } from "@/backend/controllers/interview.controller";
 import { InterviewBody } from "@/backend/types/interview.types";
 
 export async function newInterview(body: InterviewBody) {
@@ -12,5 +12,15 @@ export async function deleteInterview(interviewId: string) {
 }
 
 export async function evaluateInterviewAnswer() {
-    return await evaluateAnswer1();
+    return await updateInterviewDetails();
+}
+
+export async function updateInterview(
+    interviewId: string,
+    durationLeft: string,
+    questionId: string,
+    answer: string,
+    completed?: boolean
+) {
+    return await updateInterviewDetails(interviewId, durationLeft, questionId, answer, completed);
 }
