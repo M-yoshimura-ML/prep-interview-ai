@@ -1,6 +1,6 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import Interview from "../models/interview.model";
+import Interview, { IQuestion } from "../models/interview.model";
 import { evaluateAnswer, generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
 import { getCurrentUser } from "../utils/auth";
@@ -82,10 +82,80 @@ export const deleteUserInterview = catchAsyncErrors(async (interviewId: string) 
 });
 
 
-export const evaluateAnswer1 = catchAsyncErrors(async () => {
-    await evaluateAnswer(
-        "What is React.js, and how does it differ from traditional JavaScript frameworks ?",
-        "React.js is a JS library that is used for building user interfaces. It's different from traditional JS because it use a virtual DOM to update the UI efficiently  and it allows developers to create reusable UI components."
-    );
+export const updateInterviewDetails = catchAsyncErrors(async (
+    interviewId: string,
+    durationLeft: string,
+    questionId: string,
+    answer: string,
+    completed?: boolean
+) => {
+    await dbConnect();
+
+    const interview = await Interview.findById(interviewId);
+
+    if(!interview) {
+        throw new Error("Interview not found");
+    }
+
+    if (answer) {
+        const questionIndex = interview?.questions?.findIndex(
+            (question: IQuestion) => question._id.toString() === questionId
+        );
+        if(questionIndex === -1) {
+            throw new Error("Question not found");
+        }
+
+        const question = interview?.questions[questionIndex];
+
+        let overallScore = 0;
+        let clarity = 0;
+        let relevance = 0;
+        let completeness = 0;
+        let suggestion = 'No suggestion provided';
+
+        if(answer !== 'pass') {
+            ({ overallScore, clarity, relevance, completeness, suggestion } = 
+                await evaluateAnswer(question.question, answer)
+            )
+        }
+
+        if (!question?.completed) {
+            interview.answered += 1;
+        }
+
+        question.answer = answer;
+        question.completed = true;
+        question.result = {
+            overallScore,
+            clarity,
+            relevance,
+            completeness,
+            suggestion
+        }
+        interview.durationLeft = Number(durationLeft);
+    } 
+
+    if(interview?.answered === interview?.questions?.length) {
+        interview.status = "completed";
+    }
+
+    if(durationLeft === '0') {
+        interview.durationLeft = Number(durationLeft);
+        interview.status = "completed";
+    }
+
+    if(completed) {
+        interview.durationLeft = Number(durationLeft);
+        interview.status = "completed";
+    }
+
+    // await evaluateAnswer(
+    //     "What is React.js, and how does it differ from traditional JavaScript frameworks ?",
+    //     "React.js is a JS library that is used for building user interfaces. It's different from traditional JS because it use a virtual DOM to update the UI efficiently  and it allows developers to create reusable UI components."
+    // );
+
+    await interview.save();
+
+    return { updated: true }
 });
 
