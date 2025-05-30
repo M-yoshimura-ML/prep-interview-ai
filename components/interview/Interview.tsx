@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Progress, Button, Alert, Chip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview, IQuestion } from "@/backend/models/interview.model";
-import { getForstIncompleteQuestionIndex } from "@/helpers/helpers";
+import { formatTime, getForstIncompleteQuestionIndex } from "@/helpers/helpers";
 
 import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 
@@ -18,6 +18,26 @@ export default function Interview({ interview }: { interview: IInterview }) {
     const currentQuestion = interview?.questions[currentQuestionIndex];
 
     const [answer, setAnswer] = useState("");
+    const [timeLeft, setTimeLeft] = useState(interview?.durationLeft);
+    const [showAlert, setShowAlert] = useState(false);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime: number) => {
+                if(prevTime <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+
+                if(prevTime === 10) {
+                    setShowAlert(true);
+                }
+
+                return prevTime - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [])
 
     const handleAnswerChange = (value: string) => {
         setAnswer(value);
@@ -25,13 +45,13 @@ export default function Interview({ interview }: { interview: IInterview }) {
 
     return (
         <div className="flex h-full w-full max-w-full flex-col gap-8">
-            
-            <Alert
-                color="danger"
-                description={"Interview is about to exit"}
-                title={"Time up!"}
-            />
-            
+            {showAlert && 
+                <Alert
+                    color="danger"
+                    description={"Interview is about to exit"}
+                    title={"Time up!"}
+                />
+            }
 
             <Progress
                 aria-label="Interview Progress"
@@ -54,7 +74,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-5">
                 <span className="text-lg font-semibold text-right mb-2 sm:mb-0">
-                    Duration Left: {"10:10"}
+                    Duration Left: {formatTime(timeLeft)}
                 </span>
                 <Button
                     color="danger"
