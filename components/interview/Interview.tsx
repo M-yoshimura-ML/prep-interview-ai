@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import { IInterview, IQuestion } from "@/backend/models/interview.model";
 import { getForstIncompleteQuestionIndex } from "@/helpers/helpers";
 
-//import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
+import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 
 
 export default function Interview({ interview }: { interview: IInterview }) {
@@ -16,6 +16,12 @@ export default function Interview({ interview }: { interview: IInterview }) {
     const [currentQuestionIndex, setCurrentQuestionIntex] = useState(initialQuestionIndex);
 
     const currentQuestion = interview?.questions[currentQuestionIndex];
+
+    const [answer, setAnswer] = useState("");
+
+    const handleAnswerChange = (value: string) => {
+        setAnswer(value);
+    }
 
     return (
         <div className="flex h-full w-full max-w-full flex-col gap-8">
@@ -67,7 +73,11 @@ export default function Interview({ interview }: { interview: IInterview }) {
                 </span>
             </span>
 
-            {/* <PromptInputWithBottomActions /> */}
+            <PromptInputWithBottomActions 
+              key={currentQuestionIndex} 
+              value={answer} 
+              onChange={handleAnswerChange}
+            />
 
             <div className="flex justify-between items-center mt-5">
                 <Button
