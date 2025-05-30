@@ -60,6 +60,28 @@ export const generateQuestions = async (
     return questions;
 }
 
+function extractScoresAndSuggestion(content: string) {
+    const overAllScoreMatch = content.match(/Overall score=(\d+)/);
+    const relevanceScoreMatch = content.match(/Relevance score=(\d+)/);
+    const clarityScoreMatch = content.match(/Clarity score=(\d+)/);
+    const completenessScoreMatch = content.match(/Completeness score=(\d+)/);
+    const sugguestionsMatch = content.match(/Suggestions=(.*)/);
+
+    const overAllScore = overAllScoreMatch ? overAllScoreMatch[1] : "0";
+    const relevance = relevanceScoreMatch ? relevanceScoreMatch[1] : "0";
+    const clarity = clarityScoreMatch ? clarityScoreMatch[1] : "0";
+    const completeness = completenessScoreMatch ? completenessScoreMatch[1] : "0";
+    const suggestion = sugguestionsMatch ? sugguestionsMatch[1] : "";
+
+    return {
+        overAllScore: parseInt(overAllScore),
+        relevance: parseInt(relevance),
+        clarity: parseInt(clarity),
+        completeness: parseInt(completeness),
+        suggestion: suggestion
+    }
+}
+
 export const evaluateAnswer = async (question: string, answer: string) => {
     const prompt = `
       Evaluate the following answer to the question based on the evaluation criteria and provide the scores for relevance, clarity and completeness, followed by suggestions in text format.
@@ -106,5 +128,15 @@ export const evaluateAnswer = async (question: string, answer: string) => {
         throw new Error("Failed to generate questions.");
     }
 
-    console.log(content);
+    const result = extractScoresAndSuggestion(content);
+
+    console.log(result);
+
+    return {
+        overallScore: result.overAllScore,
+        relevance: result.relevance,
+        clarity: result.clarity,
+        completeness: result.completeness,
+        suggestion: result.suggestion
+    }
 }
