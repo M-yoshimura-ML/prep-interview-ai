@@ -9,6 +9,7 @@ import { formatTime, getForstIncompleteQuestionIndex } from "@/helpers/helpers";
 import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 import toast from "react-hot-toast";
 import { updateInterview } from "@/actions/interview.action";
+import { getAnswersFromLocalStorage, saveAnswerToLocalStorage } from "@/helpers/interview";
 
 
 export default function Interview({ interview }: { interview: IInterview }) {
@@ -20,9 +21,28 @@ export default function Interview({ interview }: { interview: IInterview }) {
     const currentQuestion = interview?.questions[currentQuestionIndex];
 
     const [answer, setAnswer] = useState("");
+    const [answers, setAnswers] = useState<{ [key: string]: string }>({});
     const [timeLeft, setTimeLeft] = useState(interview?.durationLeft);
     const [showAlert, setShowAlert] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Load answers from Local storage
+        const storedAnswers = getAnswersFromLocalStorage(interview?._id);
+        if(storedAnswers) {
+            setAnswer(storedAnswers);
+        } else {
+            interview?.questions?.forEach((question: IQuestion) => {
+                if(question?.completed) {
+                    saveAnswerToLocalStorage(
+                        interview?._id,
+                        question?._id,
+                        question?.answer
+                    )
+                }
+            })
+        }
+    }, [interview?._id]);
 
     useEffect(() => {
         const timer = setInterval(() => {

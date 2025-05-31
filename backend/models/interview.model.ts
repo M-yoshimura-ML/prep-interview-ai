@@ -61,7 +61,7 @@ const interviewSchema = new mongoose.Schema<IInterview>({
     duration: { 
         type: Number, 
         required: [true, "Duration is required"], 
-        minlength: [2*60, `Duration must be at least ${2 * 60} minute`] 
+        minlength: [2*60, `Duration must be at least 2 minute`] 
     }, // in minutes
     durationLeft: { type: Number, default: 0 }, // in minutes
     status: { type: String, default: 'pending', enum: ['pending', 'completed', 'cancelled'] }, 
