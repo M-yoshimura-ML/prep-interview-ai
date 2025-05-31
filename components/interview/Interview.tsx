@@ -9,7 +9,7 @@ import { formatTime, getForstIncompleteQuestionIndex } from "@/helpers/helpers";
 import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 import toast from "react-hot-toast";
 import { updateInterview } from "@/actions/interview.action";
-import { getAnswersFromLocalStorage, saveAnswerToLocalStorage } from "@/helpers/interview";
+import { getAnswerFromLocalStorage, getAnswersFromLocalStorage, saveAnswerToLocalStorage } from "@/helpers/interview";
 
 
 export default function Interview({ interview }: { interview: IInterview }) {
@@ -85,6 +85,36 @@ export default function Interview({ interview }: { interview: IInterview }) {
             
         } finally {
             setLoading(false);
+        }
+    }
+
+    const handleNextQuestion = async (answer: string) => {
+        const previousAnswer = answers[currentQuestion?._id];
+
+        if(previousAnswer !== answer && answer !== "") {
+            await saveAnswerToDB(currentQuestion?._id, answer);
+            saveAnswerToLocalStorage(currentQuestion?._id, currentQuestion?._id, answer);
+        }
+
+        setAnswers((prev) => {
+            const newAnswers = {...prev};
+            newAnswers[currentQuestion?._id] = answer;
+            return newAnswers;
+        });
+
+        if(currentQuestionIndex < interview?.numOfQuestions - 1) {
+            setCurrentQuestionIntex((prevIndex) => {
+                const newIndex = prevIndex + 1;
+                const nextQuestion = interview?.questions[newIndex];
+                setAnswer(getAnswerFromLocalStorage(interview?._id, nextQuestion?._id));
+                return newIndex;
+            });
+        } else if (currentQuestionIndex === interview?.numOfQuestions - 1) {
+            // user is on last question then move user to 1st question
+            setCurrentQuestionIntex(0);
+            setAnswer(getAnswerFromLocalStorage(interview?._id, interview.questions[0]?._id));
+        } else {
+            setAnswer("");
         }
     }
 
@@ -184,12 +214,15 @@ export default function Interview({ interview }: { interview: IInterview }) {
                     color="secondary"
                     variant="flat"
                     endContent={
-                    <Icon
-                        className="flex-none outline-none [&>path]:stroke-[2]"
-                        icon="solar:arrow-right-linear"
-                        width={20}
-                    />
+                        <Icon
+                            className="flex-none outline-none [&>path]:stroke-[2]"
+                            icon="solar:arrow-right-linear"
+                            width={20}
+                        />
                     }
+                    onPress={() => handleNextQuestion(answer)}
+                    isDisabled={loading}
+                    isLoading={loading}
                 >
                     Next
                 </Button>
