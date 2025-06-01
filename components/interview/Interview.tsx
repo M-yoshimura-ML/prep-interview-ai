@@ -30,7 +30,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
         // Load answers from Local storage
         const storedAnswers = getAnswersFromLocalStorage(interview?._id);
         if(storedAnswers) {
-            setAnswer(storedAnswers);
+            setAnswers(storedAnswers);
         } else {
             interview?.questions?.forEach((question: IQuestion) => {
                 if(question?.completed) {
@@ -122,6 +122,17 @@ export default function Interview({ interview }: { interview: IInterview }) {
         await handleNextQuestion("pass");
     }
 
+    const handlePreviousQuestion = async () => {
+        if(currentQuestionIndex > 0) {
+            setCurrentQuestionIntex((prevIndex) => {
+                const newIndex = prevIndex - 1;
+                const prevQuestion = interview?.questions[newIndex];
+                setAnswer(getAnswerFromLocalStorage(interview?._id, prevQuestion?._id));
+                return newIndex;
+            });
+        }
+    }
+
     return (
         <div className="flex h-full w-full max-w-full flex-col gap-8">
             {showAlert && 
@@ -141,14 +152,23 @@ export default function Interview({ interview }: { interview: IInterview }) {
                 value={(currentQuestionIndex + 1) / interview?.numOfQuestions * 100}
             />
             <div className="flex flex-wrap gap-1.5">
-                <Chip
-                    color={"default"}
-                    size="sm"
-                    variant="flat"
-                    className="font-bold cursor-pointer text-sm radius-full"
-                >
-                    {currentQuestionIndex + 1}
-                </Chip>
+                {interview?.questions?.map((question: IQuestion, index: number) => {
+                    return (
+                    <Chip
+                        color={answers[question?._id] ? "success" : "default"}
+                        size="sm"
+                        variant="flat"
+                        className="font-bold cursor-pointer text-sm radius-full"
+                        onClick={() => {
+                            setCurrentQuestionIntex(index)
+                            setAnswer(getAnswerFromLocalStorage(interview?._id, question?._id))
+                        }}
+                    >
+                        {index + 1}
+                    </Chip>
+                    )
+                })}
+                
             
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-5">
@@ -192,6 +212,9 @@ export default function Interview({ interview }: { interview: IInterview }) {
                         width={20}
                     />
                     }
+                    onPress={() => handlePreviousQuestion()}
+                    isDisabled={loading || currentQuestionIndex === 0}
+                    isLoading={loading}
                 >
                     Previous
                 </Button>
