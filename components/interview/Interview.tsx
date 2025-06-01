@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Progress, Button, Alert, Chip } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview, IQuestion } from "@/backend/models/interview.model";
-import { formatTime, getForstIncompleteQuestionIndex } from "@/helpers/helpers";
+import { formatTime, getFirstIncompleteQuestionIndex } from "@/helpers/helpers";
 
 import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 import toast from "react-hot-toast";
@@ -14,7 +14,7 @@ import { getAnswerFromLocalStorage, getAnswersFromLocalStorage, saveAnswerToLoca
 
 export default function Interview({ interview }: { interview: IInterview }) {
 
-    const initialQuestionIndex = getForstIncompleteQuestionIndex(interview?.questions);
+    const initialQuestionIndex = getFirstIncompleteQuestionIndex(interview?.questions);
 
     const [currentQuestionIndex, setCurrentQuestionIntex] = useState(initialQuestionIndex);
 
@@ -116,6 +116,10 @@ export default function Interview({ interview }: { interview: IInterview }) {
         } else {
             setAnswer("");
         }
+    };
+
+    const handlePassQuestion = async () => {
+        await handleNextQuestion("pass");
     }
 
     return (
@@ -132,9 +136,9 @@ export default function Interview({ interview }: { interview: IInterview }) {
                 aria-label="Interview Progress"
                 className="w-full"
                 color="default"
-                label={`Question 1 of 10`}
+                label={`Question ${currentQuestionIndex + 1} of ${interview?.numOfQuestions}`}
                 size="md"
-                value={((1 + 1) / 10) * 100}
+                value={(currentQuestionIndex + 1) / interview?.numOfQuestions * 100}
             />
             <div className="flex flex-wrap gap-1.5">
                 <Chip
@@ -204,6 +208,9 @@ export default function Interview({ interview }: { interview: IInterview }) {
                         width={18}
                     />
                     }
+                    onPress={() => handlePassQuestion()}
+                    isDisabled={loading}
+                    isLoading={loading}
                 >
                     Pass
                 </Button>
