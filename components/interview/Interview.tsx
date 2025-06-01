@@ -10,6 +10,7 @@ import PromptInputWithBottomActions from "./PromptInputWithBottomActions";
 import toast from "react-hot-toast";
 import { updateInterview } from "@/actions/interview.action";
 import { getAnswerFromLocalStorage, getAnswersFromLocalStorage, saveAnswerToLocalStorage } from "@/helpers/interview";
+import { useRouter } from "next/navigation";
 
 
 export default function Interview({ interview }: { interview: IInterview }) {
@@ -25,6 +26,13 @@ export default function Interview({ interview }: { interview: IInterview }) {
     const [timeLeft, setTimeLeft] = useState(interview?.durationLeft);
     const [showAlert, setShowAlert] = useState(false);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        if(timeLeft === 0) {
+            handleExitInterview();
+        }
+    }, [timeLeft]);
 
     useEffect(() => {
         // Load answers from Local storage
@@ -133,6 +141,34 @@ export default function Interview({ interview }: { interview: IInterview }) {
         }
     }
 
+    const handleExitInterview = async () => {
+        setLoading(true);
+        try {
+            const res = await updateInterview(
+                interview?._id,
+                timeLeft?.toString(),
+                currentQuestion?._id,
+                answer,
+                true
+            )
+
+            if (res?.error) {
+                return toast.error(res?.error?.message);
+            }
+
+            if (res?.updated) {
+                setLoading(false);
+                router.push("/app/interviews");
+            }
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+            
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="flex h-full w-full max-w-full flex-col gap-8">
             {showAlert && 
@@ -179,7 +215,9 @@ export default function Interview({ interview }: { interview: IInterview }) {
                     color="danger"
                     startContent={<Icon icon="solar:exit-outline" fontSize={18} />}
                     variant="solid"
-                    onPress={() => saveAnswerToDB(currentQuestion?._id, answer)}
+                    isDisabled={loading}
+                    isLoading={loading}
+                    onPress={handleExitInterview}
                 >
                     Save & Exit Interview
                 </Button>

@@ -68,7 +68,7 @@ export default function ListInterviews({ data }: ListInterviewProps) {
         case "result":
           return (
             <div className="flex flex-col">
-              <p className="text-bold text-sm capitalize">0/10</p>
+              <p className="text-bold text-sm capitalize">{interview?.answered}/{interview?.numOfQuestions}</p>
               <p className="text-bold text-sm capitalize text-default-400">
                 {interview?.numOfQuestions} questions
               </p>
