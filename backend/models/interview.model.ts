@@ -10,7 +10,7 @@ export interface IQuestion extends Document {
         overallScore: number;
         clarity: number;
         completeness: number;
-        relevence: number;
+        relevance: number;
         suggestion: string;
     }
 }
@@ -39,7 +39,7 @@ const questionSchema = new mongoose.Schema<IQuestion>({
         overallScore: { type: Number, default: 0 },
         clarity: { type: Number, default: 0 },
         completeness: { type: Number, default: 0 },
-        relevence: { type: Number, default: 0 },
+        relevance: { type: Number, default: 0 },
         suggestion: String,
     }
 });

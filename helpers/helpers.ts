@@ -8,7 +8,7 @@ export function getPageIconAndPath(pathname: string): {
     return pageIcons[pathname];
 }
 
-export const getForstIncompleteQuestionIndex = (questions: IQuestion[]) => {
+export const getFirstIncompleteQuestionIndex = (questions: IQuestion[]) => {
     const firstIncompleteIndex = questions.findIndex(
         (question) => !question?.completed
     );

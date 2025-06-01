@@ -107,7 +107,7 @@ export default function ListInterviews({ data }: ListInterviewProps) {
                         <Icon
                           icon="solar:round-double-alt-arrow-right-bold"
                           fontSize={22}
-                          onClick={() => router.push(`app/interviews/conduct/${interview._id}`)}
+                          onClick={() => router.push(`/app/interviews/conduct/${interview._id}`)}
                         />
                       </span>
                     </Tooltip>
