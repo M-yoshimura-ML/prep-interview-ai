@@ -191,6 +191,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
                 {interview?.questions?.map((question: IQuestion, index: number) => {
                     return (
                     <Chip
+                        key={index}
                         color={answers[question?._id] ? "success" : "default"}
                         size="sm"
                         variant="flat"

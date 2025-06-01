@@ -1,3 +1,5 @@
+import { IQuestion } from "@/backend/models/interview.model";
+
 export const saveAnswerToLocalStorage = (
     interviewId: string,
     questionId: string,
@@ -25,3 +27,11 @@ export const getAnswersFromLocalStorage = (
     const storedAnswers = localStorage.getItem(key);
     return storedAnswers ? JSON.parse(storedAnswers) : null;
 };
+
+export const calculateAverageScore = ( questions: IQuestion[] ) => {
+    if(!questions || questions?.length == 0) return 0;
+
+    const totalScore = questions?.reduce((sum, question) => sum + (question?.result?.overallScore || 0), 0);
+
+    return (totalScore / questions?.length).toFixed(1);
+}
