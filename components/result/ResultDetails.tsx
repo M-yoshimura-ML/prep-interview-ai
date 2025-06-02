@@ -6,6 +6,7 @@ import ResultStats from "./ResultStats";
 import { Chip, Pagination } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
+import { QuestionCard } from "./QuestionCard";
 
 export default function ResultDetails({
   interview,
@@ -52,6 +53,10 @@ export default function ResultDetails({
               </Chip>
             </div>
           </div>
+
+          {interview?.questions.map((question, index) => (
+            <QuestionCard question={question} index={index} />
+          ))}
 
           <div className="flex justify-center items-center mt-10"></div>
         </div>

@@ -114,7 +114,7 @@ export const updateInterviewDetails = catchAsyncErrors(async (
         let suggestion = 'No suggestion provided';
 
         if(answer !== 'pass') {
-            ({ overallScore, clarity, relevance, completeness, suggestion } = 
+            ({ overallScore, relevance, clarity, completeness, suggestion } = 
                 await evaluateAnswer(question.question, answer)
             )
         }
@@ -128,8 +128,8 @@ export const updateInterviewDetails = catchAsyncErrors(async (
         question.result = {
             overallScore,
             clarity,
-            relevance,
             completeness,
+            relevance,
             suggestion
         }
         interview.durationLeft = Number(durationLeft);
