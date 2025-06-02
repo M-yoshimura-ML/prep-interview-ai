@@ -226,7 +226,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
 
             <span className="text-center h-40">
                 <span
-                    className={`tracking-tight inline font-semibold bg-clip-text text-transparent bg-gradient-to-b from-[#FF1CF7] to-[#b249f8] text-[1.4rem] lg:text-2.5xl flex items-center justify-center h-full`}
+                    className={`tracking-tight font-semibold bg-clip-text text-transparent bg-gradient-to-b from-[#FF1CF7] to-[#b249f8] text-[1.4rem] lg:text-2.5xl flex items-center justify-center h-full`}
                 >
                     {currentQuestion?.question}
                 </span>
