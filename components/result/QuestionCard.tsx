@@ -16,7 +16,7 @@ export const QuestionCard = ({index, question}: Props) => {
 
                 <div className='items-center flex rounded-medium border p-2'>
                     <span style={{ fontSize: 16 }} className="text-bold">
-                        {index + 1}
+                        {index}
                     </span>
                 </div>
 
