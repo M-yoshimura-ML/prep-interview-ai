@@ -12,6 +12,8 @@ import {
   Tooltip,
   Button,
   Link,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
@@ -51,6 +53,21 @@ export default function ListInterviews({ data }: ListInterviewProps) {
       router.push("/app/interviews");
     }
   }
+
+  let queryParams;
+
+  const handleEstatusChange = (status: string) => {
+    queryParams = new URLSearchParams(window.location.search);
+    if(queryParams.has("status") && status === "all") {
+      queryParams.delete("status");
+    } else if(queryParams.has("status")) {
+      queryParams.set("status", status);
+    } else {
+      queryParams.append("status", status);
+    }
+    const path = `${window.location.pathname}?${queryParams.toString()}`;
+    router.push(path);
+  };
 
   const renderCell = React.useCallback(
     (interview: IInterview, columnKey: Key) => {
@@ -135,6 +152,15 @@ export default function ListInterviews({ data }: ListInterviewProps) {
 
   return (
     <div className="my-4">
+      <div className="flex items-center justify-end mb-4">
+        <Select size="sm" className="max-w-xs" label="Select a status"
+          onChange={(e) => handleEstatusChange(e.target.value)}
+        >
+          <SelectItem key={"all"}>All</SelectItem>
+          <SelectItem key={"pending"}>Pending</SelectItem>
+          <SelectItem key={"completed"}>Completed</SelectItem>
+      </Select>
+      </div>
       <Table aria-label="Interivews table">
         <TableHeader columns={columns}>
           {(column) => (

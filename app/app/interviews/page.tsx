@@ -4,12 +4,14 @@ import { cookies } from 'next/headers';
 import { getAuthHeader } from '@/helpers/auth';
 
 
-async function getInterviews() {
+async function getInterviews(searchParams: string) {
     try {
+        const urlParams = new URLSearchParams(searchParams);
+        const queryStr = urlParams.toString();
         const nextCookies = await cookies();
         const authHeader = getAuthHeader(nextCookies);
 
-        const res = await fetch(`${process.env?.API_URL}/api/interviews`, {
+        const res = await fetch(`${process.env?.API_URL}/api/interviews?${queryStr}`, {
             headers: authHeader.headers,
             method: 'GET',
         });
@@ -26,8 +28,9 @@ async function getInterviews() {
     }
 }
 
-const InterviewPage = async () => {
-    const data = await getInterviews();
+const InterviewPage = async ({ searchParams }: { searchParams: string }) => {
+    const searchParamsValue = await searchParams;
+    const data = await getInterviews(searchParamsValue);
 
     return (
         <ListInterviews data={data} />
