@@ -101,7 +101,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
 
         if(previousAnswer !== answer && answer !== "") {
             await saveAnswerToDB(currentQuestion?._id, answer);
-            saveAnswerToLocalStorage(currentQuestion?._id, currentQuestion?._id, answer);
+            saveAnswerToLocalStorage(interview?._id, currentQuestion?._id, answer);
         }
 
         setAnswers((prev) => {
@@ -114,7 +114,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
             setCurrentQuestionIntex((prevIndex) => {
                 const newIndex = prevIndex + 1;
                 const nextQuestion = interview?.questions[newIndex];
-                setAnswer(getAnswerFromLocalStorage(interview?._id, nextQuestion?._id));
+                setAnswer(getAnswerFromLocalStorage(interview?._id, nextQuestion?._id) || answers[nextQuestion?._id] || "");
                 return newIndex;
             });
         } else if (currentQuestionIndex === interview?.numOfQuestions - 1) {
@@ -135,7 +135,7 @@ export default function Interview({ interview }: { interview: IInterview }) {
             setCurrentQuestionIntex((prevIndex) => {
                 const newIndex = prevIndex - 1;
                 const prevQuestion = interview?.questions[newIndex];
-                setAnswer(getAnswerFromLocalStorage(interview?._id, prevQuestion?._id));
+                setAnswer(getAnswerFromLocalStorage(interview?._id, prevQuestion?._id) || answers[prevQuestion?._id] || "");
                 return newIndex;
             });
         }

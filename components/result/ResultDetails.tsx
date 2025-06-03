@@ -7,12 +7,24 @@ import { Chip, Pagination } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { IInterview } from "@/backend/models/interview.model";
 import { QuestionCard } from "./QuestionCard";
+import { getTotalPages, paginate } from "@/helpers/helpers";
 
 export default function ResultDetails({
   interview,
 }: {
   interview: IInterview;
 }) {
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const questionsPerPage = 2;
+
+  const totalPages = getTotalPages(interview?.questions?.length, questionsPerPage);
+
+  const currentQuestions = paginate(interview?.questions, currentPage, questionsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  }
 
   return (
     <div>
@@ -54,9 +66,16 @@ export default function ResultDetails({
             </div>
           </div>
 
-          {interview?.questions.map((question, index) => (
-            <QuestionCard question={question} index={index} />
+          {currentQuestions.map((question, index) => (
+            <QuestionCard key={index} question={question} index={(currentPage - 1) * questionsPerPage + index + 1} />
           ))}
+
+          <div className="flex justify-center items-center mt-10">
+            <Pagination
+              isCompact showControls showShadow initialPage={1} total={totalPages} page={currentPage}
+              onChange={handlePageChange}
+             />
+          </div>
 
           <div className="flex justify-center items-center mt-10"></div>
         </div>
