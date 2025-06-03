@@ -3,7 +3,9 @@ import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import Interview, { IQuestion } from "../models/interview.model";
 import { evaluateAnswer, generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
+import APIFilters from "../utils/apiFilters";
 import { getCurrentUser } from "../utils/auth";
+import { getQueryStr } from "../utils/utils";
 
 const mockQuestions = (numOfQuestions: number) => {
     const questions = [];
@@ -52,9 +54,15 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
     const user = await getCurrentUser(request);
     if (!user) throw new Error("Not authenticated");
 
-    const interviews = await Interview.find({ user: user._id })
-        // .populate("user", "name email")
-        // .sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const queryStr = getQueryStr(searchParams);
+
+    queryStr.user = user._id;
+
+    const apiFilters = new APIFilters(Interview, queryStr).filter(); 
+
+    //const interviews = await Interview.find({ user: user._id });
+    const interviews = await apiFilters.query;
 
     return { interviews };
 });
