@@ -22,6 +22,7 @@ import { deleteInterview } from "@/actions/interview.action";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { calculateAverageScore } from "@/helpers/interview";
+import CustomPagination from "../layout/pagination/CustomPagination";
 
 export const columns = [
   { name: "INTERVIEW", uid: "interview" },
@@ -33,11 +34,13 @@ export const columns = [
 type ListInterviewProps = {
   data: {
     interviews: IInterview[];
+    resultsPerPage: number;
+    filteredCount: number;
   };
 };
 
 export default function ListInterviews({ data }: ListInterviewProps) {
-  const { interviews } = data;
+  const { interviews, resultsPerPage, filteredCount } = data;
 
   const router = useRouter();
 
@@ -56,7 +59,7 @@ export default function ListInterviews({ data }: ListInterviewProps) {
 
   let queryParams;
 
-  const handleEstatusChange = (status: string) => {
+  const handleStatusChange = (status: string) => {
     queryParams = new URLSearchParams(window.location.search);
     if(queryParams.has("status") && status === "all") {
       queryParams.delete("status");
@@ -154,12 +157,12 @@ export default function ListInterviews({ data }: ListInterviewProps) {
     <div className="my-4">
       <div className="flex items-center justify-end mb-4">
         <Select size="sm" className="max-w-xs" label="Select a status"
-          onChange={(e) => handleEstatusChange(e.target.value)}
+          onChange={(e) => handleStatusChange(e.target.value)}
         >
           <SelectItem key={"all"}>All</SelectItem>
           <SelectItem key={"pending"}>Pending</SelectItem>
           <SelectItem key={"completed"}>Completed</SelectItem>
-      </Select>
+        </Select>
       </div>
       <Table aria-label="Interivews table">
         <TableHeader columns={columns}>
@@ -182,6 +185,10 @@ export default function ListInterviews({ data }: ListInterviewProps) {
           )}
         </TableBody>
       </Table>
+
+      <div className="flex justify-center items-center mt-10">
+        <CustomPagination resPerPage={resultsPerPage} filteredCount={filteredCount} />
+      </div>
     </div>
   );
 }

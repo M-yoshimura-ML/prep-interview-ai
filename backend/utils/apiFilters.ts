@@ -14,6 +14,15 @@ class APIFilters {
         this.query = this.query.find(queryCopy);
         return this;
     }
+
+    pagination(resultsPerPage: number) {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const skip = resultsPerPage * (currentPage - 1);
+
+        this.query = this.query.limit(resultsPerPage).skip(skip);
+
+        return this;
+    }
 }
 
 export default APIFilters;

@@ -13,15 +13,20 @@ import {
   Tooltip,
   Button,
   Link,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Key } from "@react-types/shared";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import CustomPagination from '../layout/pagination/CustomPagination';
 
 type Props = {
     data: {
-        interviews: IInterview[]
+        interviews: IInterview[],
+        resultsPerPage: number,
+        filteredCount: number,
     }
 }
 
@@ -33,7 +38,24 @@ export const columns = [
 ]
 
 const ListResults = ({ data }: Props) => {
-    const { interviews } = data;
+    const { interviews, resultsPerPage, filteredCount } = data;
+    console.log("ListResults", interviews);
+    const router = useRouter();
+
+    let queryParams;
+
+    const handleStatusChange = (status: string) => {
+      queryParams = new URLSearchParams(window.location.search);
+      if(queryParams.has("status") && status === "all") {
+        queryParams.delete("status");
+      } else if(queryParams.has("status")) {
+        queryParams.set("status", status);
+      } else {
+        queryParams.append("status", status);
+      }
+      const path = `${window.location.pathname}?${queryParams.toString()}`;
+      router.push(path);
+    };
 
     const renderCell = React.useCallback(
         (interview: IInterview, columnKey: Key) => {
@@ -93,6 +115,15 @@ const ListResults = ({ data }: Props) => {
 
     return (
     <div className="my-4">
+      <div className="flex items-center justify-end mb-4">
+        <Select size="sm" className="max-w-xs" label="Select a status"
+          onChange={(e) => handleStatusChange(e.target.value)}
+        >
+          <SelectItem key={"all"}>All</SelectItem>
+          <SelectItem key={"pending"}>Pending</SelectItem>
+          <SelectItem key={"completed"}>Completed</SelectItem>
+        </Select>
+      </div>
       <Table aria-label="Interivews table">
         <TableHeader columns={columns}>
           {(column) => (
@@ -114,6 +145,10 @@ const ListResults = ({ data }: Props) => {
           )}
         </TableBody>
       </Table>
+
+      <div className="flex justify-center items-center mt-10">
+        <CustomPagination resPerPage={resultsPerPage} filteredCount={filteredCount} />
+      </div>
     </div>
   );
 }

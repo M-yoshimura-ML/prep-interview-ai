@@ -23,8 +23,8 @@ export const formatTime= (seconds: number) => {
     return `${minutes?.toString().padStart(2, "0")}:${remainingSeconds?.toString().padStart(2, "0")}`
 }
 
-export const getTotalPages = (totalQuestions: number, questionsPerPage: number) => {
-    return Math.ceil(totalQuestions / questionsPerPage);
+export const getTotalPages = (totalItems: number, itemsPerPage: number) => {
+    return Math.ceil(totalItems / itemsPerPage);
 }
 
 export const paginate = <T>(

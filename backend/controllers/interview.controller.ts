@@ -1,6 +1,6 @@
 import dbConnect from "../config/dbConnect";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import Interview, { IQuestion } from "../models/interview.model";
+import Interview, { IInterview, IQuestion } from "../models/interview.model";
 import { evaluateAnswer, generateQuestions } from "../openai/openai";
 import { InterviewBody } from "../types/interview.types";
 import APIFilters from "../utils/apiFilters";
@@ -51,6 +51,8 @@ export const createInterview = catchAsyncErrors(async (body: InterviewBody) => {
 export const getInterviews = catchAsyncErrors(async (request: Request) => {
     await dbConnect();
 
+    const resultsPerPage: number = 2;
+
     const user = await getCurrentUser(request);
     if (!user) throw new Error("Not authenticated");
 
@@ -59,12 +61,17 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
 
     queryStr.user = user._id;
 
-    const apiFilters = new APIFilters(Interview, queryStr).filter(); 
+    const apiFilters = new APIFilters(Interview, queryStr).filter();
+    let interviews: IInterview[] = await apiFilters.query;
+    const filteredCount: number = interviews.length;
+
+    apiFilters.pagination(resultsPerPage);
+    interviews = await apiFilters.query.clone();
 
     //const interviews = await Interview.find({ user: user._id });
-    const interviews = await apiFilters.query;
+    //const interviews = await apiFilters.query;
 
-    return { interviews };
+    return { interviews, resultsPerPage, filteredCount };
 });
 
 export const getInterviewById = catchAsyncErrors(async (id: string) => {
