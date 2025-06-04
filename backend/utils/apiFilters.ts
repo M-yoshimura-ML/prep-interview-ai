@@ -23,6 +23,16 @@ class APIFilters {
 
         return this;
     }
+
+    sort() {
+        if (this.queryStr.sort) {
+            const sortBy = this.queryStr.sort.split(",").join(" ");
+            this.query = this.query.sort(sortBy);
+        } else {
+            this.query = this.query.sort("-createdAt");
+        }
+        return this;
+    }
 }
 
 export default APIFilters;
