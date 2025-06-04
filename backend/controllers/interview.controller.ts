@@ -65,7 +65,7 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
     let interviews: IInterview[] = await apiFilters.query;
     const filteredCount: number = interviews.length;
 
-    apiFilters.pagination(resultsPerPage);
+    apiFilters.pagination(resultsPerPage).sort();
     interviews = await apiFilters.query.clone();
 
     //const interviews = await Interview.find({ user: user._id });
