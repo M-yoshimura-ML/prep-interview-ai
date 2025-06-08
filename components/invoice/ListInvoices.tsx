@@ -16,6 +16,7 @@ import {
   Select,
   SelectItem,
   Pagination,
+  Alert,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Key } from "@react-types/shared";
@@ -52,6 +53,8 @@ const ListInvoices = ({ invoices }: Props) => {
       </div>
     )
   }
+
+  const lastInvoice = invoices[0];
 
   const renderCell = React.useCallback(
     (invoice: Stripe.Invoice, columnKey: Key) => {
@@ -109,6 +112,17 @@ const ListInvoices = ({ invoices }: Props) => {
 
   return (
     <div className="my-4">
+      <div className="flex items-center justify-center w-full mb-5">
+        <Alert 
+          title="Next Billing"
+          color="success"
+          description={`Your next billing of ${lastInvoice?.amount_paid / 100 || 0}
+           will be on ${lastInvoice?.lines?.data[0]?.period?.end 
+          ? new Date(lastInvoice?.lines?.data[0]?.period?.end * 1000).toLocaleDateString() 
+          : ""}`}
+        className="w-full max-w-3xl"
+        />
+      </div>
       <Table aria-label="Invoices table">
         <TableHeader columns={columns}>
           {(column) => (
