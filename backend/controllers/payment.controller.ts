@@ -28,6 +28,22 @@ export const createSubscription = catchAsyncErrors(
     }
 );
 
+export const cancelSubscription = catchAsyncErrors(
+    async (email: string) => {
+        await dbConnect();
+
+        const user = await User.findOne({ email });
+
+        if (!user || !user.subscription?.id) {
+            throw new Error("User or Subscription not found");
+        }
+
+        const subscription = await stripe.subscriptions.cancel(user.subscription.id);
+
+        return { status: subscription.status };
+    }
+);
+
 export const subscriptionWebhook = async (req: Request) => {
     console.log("Received webhook request");
     const rawBody = await req.text();

@@ -1,6 +1,6 @@
 'use server';
 
-import { createSubscription } from "@/backend/controllers/payment.controller";
+import { cancelSubscription, createSubscription } from "@/backend/controllers/payment.controller";
 
 export async function createNewSubscription(
     email: string,
@@ -9,3 +9,8 @@ export async function createNewSubscription(
     return await createSubscription(email, paymentMethodId);
 }
 
+export async function cancelUserSubscription(
+    email: string
+) {
+    return await cancelSubscription(email);
+}
