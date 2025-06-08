@@ -30,8 +30,16 @@ const Unsubscribe = () => {
     }
 
     if(res?.status) {
+
+      const updateSession = await update({
+          subscription: {
+              status: res.status,
+          }
+      });
+      if(updateSession) {
         toast.success("Subscription cancelled successfully");
         router.push("/");
+      }
     }
   };
 

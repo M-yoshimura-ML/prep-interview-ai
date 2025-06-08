@@ -32,7 +32,7 @@ const Subscribe = () => {
 };
 
 const CheckoutForm = () => {
-    const  { data } = useSession();
+    const  { data, update } = useSession();
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter();
@@ -92,8 +92,19 @@ const CheckoutForm = () => {
 
             if(res?.subscription) {
                 setLoading(false);
-                toast.success("Subscription successful!");
-                router.push("/app/dashboard");
+
+                const updateSession = await update({
+                    subscription: {
+                        id: res.subscription.id,
+                        status: res.subscription.status,
+                    }
+                });
+
+                if(updateSession) {
+                    toast.success("Subscription successful!");
+                    router.push("/app/dashboard");
+                }
+                
             }
         } catch (err) {
             console.error("Error creating subscription:", err);
