@@ -24,7 +24,7 @@ export interface IUser extends Document {
         status: string;
         startDate: Date;
         currentPeriodEnd: Date;
-        nextPaymentAtetmp: Date;
+        nextPaymentAttempt: Date;
     };
     resetPasswordToken: string;
     resetPasswordExpire: Date;
@@ -102,7 +102,7 @@ const userSchema = new mongoose.Schema<IUser>({
             type: Date,
             default: null,
         },
-        nextPaymentAtetmp: {
+        nextPaymentAttempt: {
             type: Date,
             default: null,
         },
