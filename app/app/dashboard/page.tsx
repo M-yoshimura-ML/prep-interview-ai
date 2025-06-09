@@ -4,17 +4,17 @@ import { cookies } from 'next/headers';
 import { getAuthHeader } from '@/helpers/auth';
 import Dashboard from '@/components/dashboard/Dashboard';
 
-const data = {
-    totalInterviews: 0,
-    completionRate: 0,
-    stats: [{
-      date: "2023-10-01",
-      totalInterviews: 5,
-      completedQuestion: 3,
-      unasweredQuestion: 0,
-      completionRate: 60,
-    }]
-};
+// const data = {
+//     totalInterviews: 0,
+//     completionRate: 0,
+//     stats: [{
+//       date: "2023-10-01",
+//       totalInterviews: 5,
+//       completedQuestion: 3,
+//       unasweredQuestion: 0,
+//       completionRate: 60,
+//     }]
+// };
 
 
 async function getDashboardStats(searchParams: string) {
@@ -43,10 +43,10 @@ async function getDashboardStats(searchParams: string) {
 
 const DashboardPage = async ({ searchParams }: { searchParams: Promise<string> }) => {
     const searchParamsValue = await searchParams;
-    //const data = await getDashboardStats(searchParamsValue);
+    const data = await getDashboardStats(searchParamsValue);
 
     return (
-        <Dashboard data={data} />
+        <Dashboard data={data?.data} />
     )
 }
 
