@@ -23,6 +23,7 @@ const DashboardStatsChart = ({ stats }: { stats: StatsProps[] }) => {
   const sortedStats = stats.sort(
     (a, b) => new Date(a.date)?.getTime() - new Date(b.date)?.getTime()
   );
+  
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
@@ -53,9 +54,9 @@ const DashboardStatsChart = ({ stats }: { stats: StatsProps[] }) => {
           name={"Completed Questions"}
         />
         <Bar
-          dataKey="unasweredQuestion"
+          dataKey="unansweredQuestions"
           fill="#82ca9d"
-          name={"Unaswered Questions"}
+          name={"Unanswered Questions"}
         />
         <Bar
           dataKey="completionRate"

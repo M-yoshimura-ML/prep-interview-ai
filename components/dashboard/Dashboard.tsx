@@ -5,7 +5,7 @@ import DashboardStats from "./DashboardStats";
 import { useSession } from "next-auth/react";
 import { IUser } from "@/backend/models/user.model";
 import DashboardStatsChart from "./DashboardStatsChart";
-//import StatsDatePicker from "../date-picker/StatsDatePicker";
+import StatsDatePicker from "../date-picker/StatsDatePicker";
 
 type DashboardProps = {
   data: {
@@ -39,7 +39,7 @@ const Dashboard = ({ data }: DashboardProps) => {
                 Your Interview Stats
             </h1>
 
-            {/* <StatsDatePicker /> */}
+            <StatsDatePicker />
         </div>
 
         {data?.stats?.length > 0 ? (
