@@ -53,3 +53,17 @@ export const getFirstDayOfMonth = () => {
 export const getToday = () => {
     return formatDate(new Date());
 }
+
+export const updateSearchParams = (
+  queryParams: URLSearchParams,
+  key: string,
+  value: string
+) => {
+  if (queryParams.has(key)) {
+    queryParams.set(key, value);
+  } else {
+    queryParams.append(key, value);
+  }
+
+  return queryParams;
+};
