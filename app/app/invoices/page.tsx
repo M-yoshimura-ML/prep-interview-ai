@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { getAuthHeader } from '@/helpers/auth';
 import ListInvoices from '@/components/invoice/ListInvoices';
 
+export const dynamic = "force-dynamic";
 
 async function getInvoices() {
     try {
