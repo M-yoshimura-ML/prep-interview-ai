@@ -14,9 +14,31 @@ export default withAuth(function middleware(req) {
         // Redirect to the subscription page if the user is not subscribed
         return NextResponse.redirect(new URL("/", req.url));
     }
+
+    if(url?.startsWith("/admin") && !isAdminUser) {
+        return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    if(url?.startsWith("/api/admin") && !isAdminUser) {
+        return new NextResponse(
+            JSON.stringify(
+                {message: "You are not authorized to access this resource"}
+            ),
+            {status: 401, headers: {"Content-Type": "application/json"}}
+        );
+    }
 })
 
 export const config = {
     // Define the paths that should be protected by authentication
-    matcher: ["/app/:path*", "/api/interviews/:path*"],
+    matcher: [
+        "/app/:path*",
+        "/admin/:path*",
+        "/subscribe",
+        "/unsubscribe",
+        "/api/admin/:path*",
+        "/api/dashboard/:path*",
+        "/api/interviews/:path*",
+        "/api/invoices/:path*"
+    ],
 };
