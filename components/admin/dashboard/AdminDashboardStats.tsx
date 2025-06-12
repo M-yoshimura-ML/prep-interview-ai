@@ -14,11 +14,11 @@ type Props = {
     averageInterviewsPerUser: number;
   };
 };
-export default function AdminDashboardStats() {
+export default function AdminDashboardStats({ data }: Props) {
   const stats = [
     {
       title: "Total Users",
-      value: 10,
+      value: data?.totalUsers,
       bgColor: "bg-primary-50",
       iconColor: "text-primary",
       iconName: "solar:users-group-rounded-linear",
@@ -26,7 +26,7 @@ export default function AdminDashboardStats() {
     },
     {
       title: "Active Subs",
-      value: 5,
+      value: data?.activeSubscriptions,
       bgColor: "bg-warning-50",
       iconColor: "text-warning",
       iconName: "solar:users-group-two-rounded-bold",
@@ -34,7 +34,7 @@ export default function AdminDashboardStats() {
     },
     {
       title: "Active Subs ($)",
-      value: 300,
+      value: `$${data?.subscriptionWorth}`,
       bgColor: "bg-success-50",
       iconColor: "text-success",
       iconName: "solar:dollar-minimalistic-broken",
@@ -42,7 +42,7 @@ export default function AdminDashboardStats() {
     },
     {
       title: "Total Interviews",
-      value: 200,
+      value: data?.totalInterviews,
       bgColor: "bg-danger-50",
       iconColor: "text-danger",
       iconName: "solar:user-speak-bold",
@@ -50,7 +50,7 @@ export default function AdminDashboardStats() {
     },
     {
       title: "Completion Rate",
-      value: 100,
+      value: `${data?.interviewCompletionRate}%`,
       bgColor: "bg-secondary-50",
       iconColor: "text-secondary",
       iconName: "tabler:percentage",
@@ -58,7 +58,7 @@ export default function AdminDashboardStats() {
     },
     {
       title: "Interviews / user",
-      value: 30,
+      value: data?.averageInterviewsPerUser,
       bgColor: "bg-default-50",
       iconColor: "text-default",
       iconName: "tabler:user-hexagon",

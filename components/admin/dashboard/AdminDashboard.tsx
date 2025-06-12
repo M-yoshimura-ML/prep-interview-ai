@@ -4,8 +4,18 @@ import React from 'react';
 import AdminDashboardStats from './AdminDashboardStats';
 import StatsDatePicker from '@/components/date-picker/StatsDatePicker';
 
+type Props = {
+  data: {
+    totalUsers: number;
+    activeSubscriptions: number;
+    subscriptionWorth: number;
+    totalInterviews: number;
+    interviewCompletionRate: number;
+    averageInterviewsPerUser: number;
+  };
+};
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ data }: Props) => {
     return (
         <div>
             <div className='flex justify-between items-center my-16'>
@@ -14,7 +24,7 @@ const AdminDashboard = () => {
                 </h1>
                 <StatsDatePicker />
             </div>
-            <AdminDashboardStats />
+            <AdminDashboardStats data={data} />
         </div>
     )
 }
