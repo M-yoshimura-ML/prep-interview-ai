@@ -1,6 +1,6 @@
 'use server';
 
-import { forgotUserPassword, register, resetUserPassword, updateUserData, updateUserPassword, updateUserProfile } from "@/backend/controllers/auth.controller";
+import { deleteUserData, forgotUserPassword, register, resetUserPassword, updateUserData, updateUserPassword, updateUserProfile } from "@/backend/controllers/auth.controller";
 
 export async function registerUser(name: string, email: string, password: string) {
     return await register(name, email, password);
@@ -48,4 +48,10 @@ export async function updateUser(
     }
 ) {
     return await updateUserData(userId, userData);
+}
+
+export async function deleteUser(
+    userId: string
+) {
+    return await deleteUserData(userId);
 }

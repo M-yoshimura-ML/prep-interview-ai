@@ -22,6 +22,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { IUser } from '@/backend/models/user.model';
 import CustomPagination from "@/components/layout/pagination/CustomPagination";
 import UpdateUser from "./UpdateUser";
+import { cancelUserSubscription } from "@/actions/payment.action";
+import { isUserSubscribed } from "@/helpers/auth";
+import { deleteUser } from "@/actions/auth.actions";
 
 export const columns = [
   { name: "USER", uid: "user" },
@@ -42,18 +45,31 @@ const ListUsers = ({ data }: Props) => {
 
     const router = useRouter();
 
-    // const deleteInterviewHandler = async (interviewId: string) => {
-    //     const res = await deleteInterview(interviewId);
+    const handleUnsubscribe = async (email: string) => {
+        const res = await cancelUserSubscription(email);
 
-    //     if(res?.error) {
-    //     return toast.error(res?.error?.message);
-    //     }
+        if(res?.error) {
+            return toast.error(res.error?.message);
+        }
 
-    //     if(res?.deleted) {
-    //         toast.success("Interview is deleted");
-    //         router.push("/admin/interviews");
-    //     }
-    // }
+        if(res?.status) {
+            toast.success("Subscription cancelled successfully.");
+            router.push("/admin/users");
+        }
+    }
+
+    const deleteUserHandler = async (userId: string) => {
+        const res = await deleteUser(userId);
+
+        if(res?.error) {
+        return toast.error(res?.error?.message);
+        }
+
+        if(res?.deleted) {
+            toast.success("user is deleted");
+            router.push("/admin/users");
+        }
+    }
 
     let queryParams;
 
@@ -115,16 +131,17 @@ const ListUsers = ({ data }: Props) => {
                 return (
                 <div className="relative flex items-center justify-center gap-2">
                     <UpdateUser user={user} />
-                    
-                    <Tooltip color="danger" content="Cancel Subscription">
-                        <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                            <Icon
-                                icon="solar:shield-cross-bold"
-                                fontSize={22}
-                                onClick={() => {}}
-                            />
-                        </span>
-                    </Tooltip>
+                    {isUserSubscribed(user) && (
+                        <Tooltip color="danger" content="Cancel Subscription">
+                            <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                                <Icon
+                                    icon="solar:shield-cross-bold"
+                                    fontSize={22}
+                                    onClick={() => {handleUnsubscribe(user?.email)}}
+                                />
+                            </span>
+                        </Tooltip>
+                    )}
                     
 
                     <Tooltip color="danger" content="Delete User">
@@ -132,7 +149,7 @@ const ListUsers = ({ data }: Props) => {
                         <Icon
                             icon="solar:trash-bin-trash-outline"
                             fontSize={21}
-                            onClick={() => {}}
+                            onClick={() => {deleteUserHandler(user._id)}}
                         />
                         </span>
                     </Tooltip>
