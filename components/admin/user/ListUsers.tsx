@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { IUser } from '@/backend/models/user.model';
 import CustomPagination from "@/components/layout/pagination/CustomPagination";
+import UpdateUser from "./UpdateUser";
 
 export const columns = [
   { name: "USER", uid: "user" },
@@ -77,8 +78,8 @@ const ListUsers = ({ data }: Props) => {
             case "user":
                 return (
                     <div className="flex flex-col">
-                        <p className="text-bold text-sm capitalize">{user?.name}</p>
-                        <p className="text-bold text-sm capitalize text-default-400">
+                        <p className="text-bold text-sm">{user?.name}</p>
+                        <p className="text-bold text-sm text-default-400">
                             {user?.email}
                         </p>
                     </div>
@@ -113,6 +114,7 @@ const ListUsers = ({ data }: Props) => {
             case "actions":
                 return (
                 <div className="relative flex items-center justify-center gap-2">
+                    <UpdateUser user={user} />
                     
                     <Tooltip color="danger" content="Cancel Subscription">
                         <span className="text-lg text-danger cursor-pointer active:opacity-50">

@@ -220,3 +220,24 @@ export const getAllUsers = catchAsyncErrors(
         return { users, resultsPerPage, filteredCount };
     }
 );
+
+export const updateUserData = catchAsyncErrors(
+    async (
+        userId: string,
+        userData: {
+            name: string,
+            roles: string[]
+        }
+    ) => {
+        await dbConnect();
+
+        const user = await User.findById(userId);
+
+        if(!user) {
+            throw new Error("User not found");
+        }
+
+        await User.findByIdAndUpdate(userId, userData);
+        return {updated: true}
+    }
+);
