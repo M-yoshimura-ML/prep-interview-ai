@@ -241,3 +241,24 @@ export const updateUserData = catchAsyncErrors(
         return {updated: true}
     }
 );
+
+export const deleteUserData = catchAsyncErrors(
+    async (
+        userId: string,
+    ) => {
+        await dbConnect();
+
+        const user = await User.findById(userId);
+
+        if(!user) {
+            throw new Error("User not found");
+        }
+
+        if(user?.profilePicture?.id) {
+            await delete_file(user.profilePicture.id);
+        }
+
+        await user.deleteOne();
+        return {deleted: true}
+    }
+);
