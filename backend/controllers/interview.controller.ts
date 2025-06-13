@@ -50,7 +50,7 @@ export const createInterview = catchAsyncErrors(async (body: InterviewBody) => {
     })();
 });
 
-export const getInterviews = catchAsyncErrors(async (request: Request) => {
+export const getInterviews = catchAsyncErrors(async (request: Request, admin?: string) => {
     await dbConnect();
 
     const resultsPerPage: number = 2;
@@ -61,7 +61,9 @@ export const getInterviews = catchAsyncErrors(async (request: Request) => {
     const { searchParams } = new URL(request.url);
     const queryStr = getQueryStr(searchParams);
 
-    queryStr.user = user._id;
+    if(!admin) {
+        queryStr.user = user._id;
+    }
 
     const apiFilters = new APIFilters(Interview, queryStr).filter();
     let interviews: IInterview[] = await apiFilters.query;
